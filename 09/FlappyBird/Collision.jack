@@ -1,0 +1,11 @@
+class Collision {
+
+    //Simple collision. Only functions in 2D and with rectangles
+    function boolean collide(Hitbox a, Hitbox b) {
+        return (a.getStartX() < b.getEndX() ) 
+        & (a.getEndX() > b.getStartX()) 
+        & (a.getStartY() < b.getEndY()) 
+        & (a.getEndY() > b.getStartY());
+    }
+
+}

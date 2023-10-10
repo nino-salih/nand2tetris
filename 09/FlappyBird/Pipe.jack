@@ -1,0 +1,160 @@
+class Pipe {
+
+    field int offset;
+    field int x;
+	field int y;
+	field int startX;
+	field int startY;
+	field Hitbox lower;
+	field Hitbox higher;
+	field Hitbox point;
+	field boolean shouldShow;
+	field boolean shouldScore;
+
+    constructor Pipe new(int _x, int _y, int _offset) {
+        let offset = _offset;
+		if(_y > 230) {let _y = LCG.mod(_y, 230);}
+		if(_y < 80) {let _y = _y + 80;}	
+		if( _x > 445) { let _x = LCG.mod(_x, 455);}
+		let x = _x;
+		let y = _y;
+		let shouldScore = true;
+		do createHitbox();
+        return this;
+    }
+
+	method void createHitbox() {
+		if(~ (lower = null)) {
+			do lower.dispose();
+		}
+		if(~ (higher = null)) {
+			do higher.dispose();
+		}
+
+		if(~ (point = null)) {
+			do point.dispose();
+		}
+		let lower = Hitbox.new(x, y, x+offset, 255);
+		let higher = Hitbox.new(x,0, x+offset, y-65);
+		let point = Hitbox.new(x + Math.divide(offset, 2), y-65, x + Math.divide(offset, 2) + 1, y);
+
+		return;
+	}
+
+	method boolean shouldScore() {
+		return shouldScore;
+	}
+
+	method void setShouldScore(boolean _value) {
+		let shouldScore = _value;
+		return;
+	}
+
+	method void showHitbox() {
+		do lower.draw();
+		do higher.draw();
+		do point.draw();
+		return;
+	}
+
+	method Hitbox getlower() {
+		return lower;
+	}
+
+	method Hitbox getHigher() {
+		return higher;
+	}
+
+		method Hitbox getPoint() {
+		return point;
+	}
+
+	method void setShouldShow(boolean show) {
+		let shouldShow = show;
+		return;
+	}
+
+	method boolean getShouldShow() {
+		return shouldShow;
+	}
+
+    method void dispose() {
+      do Memory.deAlloc(this);
+      return;
+    }
+
+    method void setOffset(int _offset) {
+        let offset = _offset;
+        return;
+    }
+
+    method void moveLeft() {
+		if(x > 0) {
+			let x = x - 5;
+			do createHitbox();
+		}
+		
+		return;
+    }
+
+    method void draw() {
+        do lowerPipe(x, y);
+		do higherPipe(x, y-80, offset);
+        return;
+    }
+
+	method int getX() {
+		return x;
+	}
+
+	method int getY() {
+		return y;
+	}
+
+	method int getOffset() {
+		return offset;
+	}
+
+	method void lowerPipe(int _startX, int _startY) {
+		var int vertical;
+		var int space;
+
+		let startX = _startX;
+		let startY = _startY;
+		let vertical = Math.divide(offset,4);
+		let space = 4;
+		do Screen.setColor(true);
+		// CREATE PIPE END BLOCK
+		do Screen.drawLine(startX, startY, startX+offset, startY);
+		do Screen.drawLine(startX, startY, startX, startY + vertical);
+		do Screen.drawLine(startX, startY + vertical, startX+offset, startY + vertical);
+		do Screen.drawLine(startX+offset, startY, startX+offset, startY + vertical);
+		// CREATE PIPE
+		do Screen.drawLine(startX+space, startY + vertical, startX+space, 255);
+		do Screen.drawLine(startX+offset-space, startY + vertical, startX+offset-space, 255);
+		return;
+
+	}
+
+	method void higherPipe(int _startX, int _startY, int offset) {
+		var int vertical;
+		var int space;
+
+		let startX = _startX;
+		let startY = _startY;
+
+		let vertical = Math.divide(offset,4);
+		let space = 4;
+		do Screen.setColor(true);
+		// CREATE PIPE END BLOCK
+		do Screen.drawLine(startX, startY, startX+offset, startY);
+		do Screen.drawLine(startX, startY, startX, startY + vertical);
+		do Screen.drawLine(startX, startY + vertical, startX+offset, startY + vertical);
+		do Screen.drawLine(startX+offset, startY, startX+offset, startY + vertical);
+		// CREATE PIPE
+		do Screen.drawLine(startX+space, startY, startX+space, 0);
+		do Screen.drawLine(startX+offset-space, startY, startX+offset-space, 0);
+		return;
+
+	}
+}

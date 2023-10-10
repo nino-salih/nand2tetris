@@ -1,0 +1,67 @@
+// Is a "random" Number Generator https://en.wikipedia.org/wiki/Linear_congruential_generator
+class LCG {
+
+    field int modulus;
+    field int a;
+    field int c;
+    field int seed;
+    field int size;
+    field Array result;
+
+    constructor LCG new(int _modulus, int _a, int _c,int _seed, int _size) {
+        let modulus = _modulus;
+        let a = _a;
+        let c = _c;
+        let seed = _seed;
+        let size = _size;
+        let result = Array.new(size);
+        do lcg();
+        return this;
+    }
+
+    method Array getArray() {
+        return result;
+    }
+
+    method void lcg() {
+        var int i;
+        var int tmp;
+        let i = 1;
+        let result[0] = seed;
+        while(i < size) {
+            let tmp = Math.multiply(result[i -1], a) + c;
+            let tmp = LCG.mod(tmp, modulus);
+            let result[i] = tmp;
+            let i = i + 1;
+        }
+
+        return;
+    }
+
+    method void print() {
+        var int i;
+        let i = 1;
+        do Output.moveCursor(0,0);
+        while(i < size) {
+            do Output.printInt(result[i]);
+            do Output.printString(" ");
+            let i = i + 1;
+        }
+        do Output.println();
+        return;
+    }
+
+    /** Returns the remainder part of x/y */
+    function int mod(int x, int y) {
+        var int q;
+        
+        let q = Math.divide(x, y);
+        return x - (q*y);
+    }
+
+    method void dispose() {
+      do result.dispose();
+      do Memory.deAlloc(this);
+      return;
+    }
+}

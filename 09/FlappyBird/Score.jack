@@ -1,0 +1,29 @@
+class Score {
+    
+    field int score;
+    field int highScore;
+
+    constructor Score new(int _highScore) {
+      let score = 0;
+      let highScore = _highScore;
+      return this;
+   }
+
+   method void increment() {
+       let score = score + 1;
+       return;
+   }
+
+   method int getHighScore() {
+       return highScore;
+   }
+
+   method int getScore() {
+       return score;
+   }
+
+    method void dispose() {
+      do Memory.deAlloc(this);
+      return;
+    }
+}

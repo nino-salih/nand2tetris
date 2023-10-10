@@ -1,0 +1,288 @@
+class Game {
+    field Bird bird;
+    field Pipe pipe;
+    field Pipe pipe2;
+    field LCG lcg;
+    field Score score;
+    field Array pipes;
+    field int distance;
+    field int jumpCount;
+    field String count;
+
+    constructor Game new() {
+      do init(0);
+      return this;
+    }
+
+    method void init(int highScore) {
+        var int i;
+        var int tmp;
+        let i = 0;
+        let jumpCount = 0;
+        let distance = 150;
+        let bird = Bird.new(3845);
+        let score = Score.new(highScore);
+        let lcg = LCG.new(235, 13, 863, 6359, 10);
+        let pipes = Array.new(10);
+        let count = String.new(5);
+        do count.setInt(highScore);
+        while(i < 3) {
+           let pipes[i] = Pipe.new(445, lcg[i], 64);
+           let i = i + 1; 
+        }
+
+        let pipe = pipes[0];
+        do pipe.setShouldShow(true);
+
+        return;
+    }
+
+    method void waitForKeypress() {
+        var char key;
+        let key = Keyboard.keyPressed();
+        // 32 is SPACE
+        while (~ (key = 32)) {
+            let key = Keyboard.keyPressed();
+            //81 is q
+            if( key = 81) { do Sys.halt();}
+            do bird.draw();
+        }
+        return;
+    }
+
+    method void titleScreen() {
+        do Output.moveCursor(0,0);
+        do Output.printString("Welcome to Flappy Bird");
+        do Output.println();
+        do Output.printString("To MOVE UP hold SPACE");
+        do Output.println();
+        do Output.printString("To QUIT hold Q");
+        return;
+    }
+
+    method void spawnPipe() {
+        var int i;
+        let i = 1;
+
+        while(i < 3) {
+            let pipe = pipes[i-1];
+            let pipe2 = pipes[i];
+
+            if( ( pipe2.getX() - pipe.getX()  ) > distance) {
+                do  pipe2.setShouldShow(true);     
+            }
+            let i = i + 1;
+        }
+
+        return;
+    }
+
+    method void despawnPipe() {
+        var int i;
+        var int tmp;
+        var int tmp2;
+        let i = 0;
+        let tmp = LCG.mod(jumpCount, 10);
+        while(i < 3) {
+              
+            let pipe = pipes[i];
+            if( pipe.getX() = 0 ) {
+                do pipe.dispose();
+                let pipes[i] = Pipe.new(445, lcg[tmp], 64);
+                
+            }
+            let i = i + 1;
+        }
+        return;
+    }
+
+    method void movePipe() {
+        var int i;
+
+        while(i < 3) {
+            let pipe = pipes[i];
+
+            if(pipe.getShouldShow()) {
+                do pipe.moveLeft();
+            }
+
+            let i = i + 1;
+        }
+
+        return;
+    }
+
+    method void moveBird() {
+        var char key;
+        let key = Keyboard.keyPressed();
+        if (key = 32) {
+            do bird.moveUp();
+            let jumpCount = LCG.mod(jumpCount + 1, 12553);
+        } else {
+            do bird.moveDown();
+        }
+        return;
+    }
+
+    method void updateScreen() {
+        var int i;
+
+        while(i < 3) {
+            let pipe = pipes[i];
+
+            if(pipe.getShouldShow()) {
+                // do Output.printString("PIPE: ");
+                // do Output.printInt(i);
+                // do Output.printString(" x= ");
+                // do Output.printInt(pipe.getX());
+                // do Output.printString(" y= ");
+                // do Output.printInt(pipe.getY());
+                // do Output.println();
+               do pipe.draw();
+            }
+
+            let i = i + 1;
+        }
+
+        do Output.moveCursor(0,32);
+        do Output.printString(count);
+
+        do bird.draw();
+
+
+        return;
+    }
+
+    method void updateLCG() {
+        if(~(lcg = null)) {
+            do lcg.dispose();
+        }
+        let lcg = LCG.new(235, 13, 863, jumpCount, 10);
+        return;
+    }
+
+    method boolean collision() {
+        var int i;
+        var boolean lower;
+        var boolean higher;
+        while(i < 3) {
+            let pipe = pipes[i];
+
+            let lower = Collision.collide(bird.getHitBox(), pipe.getlower());
+            let higher = Collision.collide(bird.getHitBox(), pipe.getHigher());
+
+            if(lower) {return true;}
+            if(higher) {return true;}
+
+            let i = i + 1;
+        }
+
+        return false;
+    }
+
+    method void getPoints() {
+        var int i;
+        var boolean shouldScore;
+        while(i < 3) {
+            let pipe = pipes[i];
+            let shouldScore = Collision.collide(bird.getHitBox(), pipe.getPoint());
+
+            if(shouldScore & pipe.shouldScore()) {
+                do score.increment();
+                do pipe.setShouldScore(false);
+            }
+            let i = i + 1;
+        }
+        return;
+    }
+
+    method void quit() {
+       var char key;
+       let key = Keyboard.keyPressed();
+       if(key = 81) {
+           do Sys.halt();
+       }
+       return;
+    }
+
+    method void restart() {
+        var int hightScore;
+        let hightScore = score.getScore();
+        if(score.getHighScore() > hightScore) {
+            let hightScore = score.getHighScore();
+        }
+        do bird.dispose();
+        do score.dispose();
+        do lcg.dispose();
+        do pipes.dispose();
+        do count.dispose(); 
+        do init(hightScore);
+        do run();      
+        return;
+    }
+
+    method void updateScore() {
+        do count.setInt(score.getScore());
+        return;
+    }
+
+    method void endingScreen() {
+        do Output.moveCursor(0,0);
+        do Output.printString("YOUR HIGHSCORE IS: ");
+        do Output.printInt(score.getHighScore());
+        do Output.println();
+        do Output.printString("YOUR SCORE IS: ");
+        do Output.printInt(score.getScore());
+        do Output.println();
+        do Sys.wait(5000);
+        return;
+    }
+
+    method void debug() {
+        var Hitbox hb;
+        var int i;
+        let hb = bird.getHitBox();
+        let i = 0;
+        do hb.draw();
+
+        while(i < 3) {
+            let pipe = pipes[i];
+            do pipe.showHitbox();
+            let i = i + 1;
+        }
+
+        return;
+    }
+
+    method void run() {
+        var boolean shouldRun;
+        let shouldRun = true;
+
+        do titleScreen();
+        do waitForKeypress();
+        do Screen.clearScreen();
+
+        while (shouldRun) {
+            do quit();
+            do updateLCG();
+            //do lcg.print();
+            do despawnPipe();
+            do spawnPipe();
+            do moveBird();
+            do movePipe();
+            do getPoints();
+            do updateScore();
+            do updateScreen();
+            //do debug();
+            if(collision()) { let shouldRun = false;}
+            
+            do Sys.wait(100);
+            do Screen.clearScreen();
+        }
+        do endingScreen();
+        do restart();
+
+        return;
+    }
+
+}

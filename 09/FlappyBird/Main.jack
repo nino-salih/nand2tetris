@@ -1,0 +1,9 @@
+/** Initializes a new Flappy Bird Game. */
+class Main {
+    function void main() {
+        var Game game;
+        let game = Game.new();
+        do game.run();
+        return;
+    }
+}

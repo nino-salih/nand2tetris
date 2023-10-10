@@ -1,0 +1,82 @@
+class Hitbox {
+    field int start_x;
+    field int start_y;
+    field int end_x;
+    field int end_y;
+
+
+    constructor Hitbox new(int _start_x, int _start_y, int _end_x,int _end_y) {
+        let start_x = _start_x;
+        let start_y = _start_y;
+        let end_x = _end_x;
+        let end_y = _end_y;
+        return this;
+    }
+
+    method void draw() {
+        var int tmp_x;
+        var int tmp_y;
+        var int tmp_ex;
+        var int tmp_ey;
+
+        let tmp_x = start_x;
+        let tmp_y = start_y;
+        let tmp_ex = end_x;
+        let tmp_ey = end_y;
+       do Screen.setColor(true);
+
+       if(start_x < 0) {let tmp_x = 0;}
+       if(start_x > 512) {let tmp_x = 512;}
+       if(end_x < 0) {let tmp_ex = 0;}
+       if(end_x > 512) {let tmp_ex = 512;}
+
+       if(start_y < 0) {let tmp_y = 0;}
+       if(start_y > 255) {let tmp_ey = 255;}
+       if(end_y < 0) {let tmp_ex = 0;}
+       if(end_y > 255) {let tmp_ey = 255;}
+
+       do Screen.drawRectangle(tmp_x, tmp_y, tmp_ex, tmp_ey);
+        return;
+    }
+
+    method int getStartX(){
+        return start_x;
+    }
+    method void setStartX(int _start_x) {
+        let start_x = _start_x;
+        return;
+    }
+
+    method int getStartY() {
+        return start_y;
+    }
+
+    method void setStartY(int _start_y) {
+        let start_y = _start_y;
+        return;
+    }
+
+    method int getEndX() {
+        return end_x;
+    }
+
+    method void setEndX(int _end_x) {
+        let end_x = _end_x;
+        return;
+    }
+
+    method int getEndY() {
+        return end_y;
+    }
+
+    method void setEndY(int _end_y) {
+        let end_y = _end_y;
+        return;
+    }
+
+    method void dispose() {
+      do Memory.deAlloc(this);
+      return;
+    }
+
+}

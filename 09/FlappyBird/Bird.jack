@@ -1,0 +1,156 @@
+class Bird {
+
+    field int location;
+    field Hitbox hitbox;
+
+    constructor Bird new(int _location) {
+        let location = _location;
+        do createHitbox();
+        return this;
+    }
+
+    method void createHitbox() {
+        var int y;
+        var int x;
+        let x = LCG.mod(location, 256) * 16;
+        let y = Math.divide(location, 256) * 8;
+
+        if(~ (hitbox = null)) {
+            do hitbox.dispose();
+        }
+        let hitbox = Hitbox.new(x,y,x+18,y+11);
+        return;
+    }
+
+    method void moveUp() {
+        //Obere Rand des Bildschirm
+        if(location > 256) {
+            let location = location - 256;
+            do createHitbox();
+        }
+        return;
+    }
+
+    method void moveDown() {
+        //Untere Rand des Bildschirm
+        //256 * 30 + 5
+        if(location < 7685) {
+            let location = location + 256;
+            do createHitbox();
+        }
+        return;
+    }
+
+    method Hitbox getHitBox() {
+        return hitbox;
+    }
+
+    method void dispose() {
+      do Memory.deAlloc(this);
+      return;
+    }
+
+    method void setlocation(int _location) {
+        let location = _location;
+        return;
+    }
+
+    method void draw() {
+        do firstFrame(location);
+        do Sys.wait(50);
+        do secondFrame(location);
+        do Sys.wait(50);
+        do thirdFrame(location);
+        do Sys.wait(50);
+        return;
+    }
+
+
+
+    //ERSTELLT MIT https://github.com/ErikUmble/JackBitmapEditor
+    method void firstFrame(int location) {
+        var int memAddress; 
+        let memAddress = 16384+location;
+        // column 0
+        do Memory.poke(memAddress, 16256);
+        do Memory.poke(memAddress +32, 18528);
+        do Memory.poke(memAddress +64, -31728);
+        do Memory.poke(memAddress +96, 17416);
+        do Memory.poke(memAddress +128, 17412);
+        do Memory.poke(memAddress +160, 2052);
+        do Memory.poke(memAddress +192, -3844);
+        do Memory.poke(memAddress +224, 2306);
+        do Memory.poke(memAddress +256, -2942);
+        do Memory.poke(memAddress +288, 2114);
+        do Memory.poke(memAddress +320, -3972);
+        do Memory.poke(memAddress +352, 3968);
+        // column 1
+        do Memory.poke(memAddress +97, 1);
+        do Memory.poke(memAddress +129, 1);
+        do Memory.poke(memAddress +161, 1);
+        do Memory.poke(memAddress +193, 3);
+        do Memory.poke(memAddress +225, 4);
+        do Memory.poke(memAddress +257, 3);
+        do Memory.poke(memAddress +289, 2);
+        do Memory.poke(memAddress +321, 3);
+        return;
+    }
+
+    //ERSTELLT MIT https://github.com/ErikUmble/JackBitmapEditor
+    method void secondFrame(int location) {
+        var int memAddress; 
+        let memAddress = 16384+location;
+        // column 0
+        do Memory.poke(memAddress, 16256);
+        do Memory.poke(memAddress +32, 18528);
+        do Memory.poke(memAddress +64, -31728);
+        do Memory.poke(memAddress +96, 17416);
+        do Memory.poke(memAddress +128, 17412);
+        do Memory.poke(memAddress +160, 2300);
+        do Memory.poke(memAddress +192, -3966);
+        do Memory.poke(memAddress +224, 2178);
+        do Memory.poke(memAddress +256, -2948);
+        do Memory.poke(memAddress +288, 2056);
+        do Memory.poke(memAddress +320, -4048);
+        do Memory.poke(memAddress +352, 4032);
+        // column 1
+        do Memory.poke(memAddress +97, 1);
+        do Memory.poke(memAddress +129, 1);
+        do Memory.poke(memAddress +161, 1);
+        do Memory.poke(memAddress +193, 3);
+        do Memory.poke(memAddress +225, 4);
+        do Memory.poke(memAddress +257, 3);
+        do Memory.poke(memAddress +289, 2);
+        do Memory.poke(memAddress +321, 3);
+        return;
+    }
+    //ERSTELLT MIT https://github.com/ErikUmble/JackBitmapEditor
+    method void thirdFrame(int location) {
+        var int memAddress; 
+        let memAddress = 16384+location;
+        // column 0
+        do Memory.poke(memAddress, 16256);
+        do Memory.poke(memAddress +32, 18528);
+        do Memory.poke(memAddress +64, -31728);
+        do Memory.poke(memAddress +96, 17468);
+        do Memory.poke(memAddress +128, 17474);
+        do Memory.poke(memAddress +160, 2178);
+        do Memory.poke(memAddress +192, -3966);
+        do Memory.poke(memAddress +224, 2116);
+        do Memory.poke(memAddress +256, -3016);
+        do Memory.poke(memAddress +288, 2056);
+        do Memory.poke(memAddress +320, -4048);
+        do Memory.poke(memAddress +352, 4032);
+        // column 1
+        do Memory.poke(memAddress +97, 1);
+        do Memory.poke(memAddress +129, 1);
+        do Memory.poke(memAddress +161, 1);
+        do Memory.poke(memAddress +193, 3);
+        do Memory.poke(memAddress +225, 4);
+        do Memory.poke(memAddress +257, 3);
+        do Memory.poke(memAddress +289, 2);
+        do Memory.poke(memAddress +321, 3);
+        return;
+    }
+
+}
